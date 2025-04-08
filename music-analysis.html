@@ -1,0 +1,231 @@
+<!-- music-analysis.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <title>Music Analysis | Houston Jones</title>
+
+	<link rel="shortcut icon" href="assets/images/sitecon.ico">
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="avgWordsData.js"></script>
+
+	
+	<!-- Bootstrap -->
+	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.no-icons.min.css" rel="stylesheet">
+	<!-- Icons -->
+	<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+	<!-- Fonts -->
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Alice|Open+Sans:400,300,700">
+	<!-- Custom styles -->
+	<link rel="stylesheet" href="assets/css/styles.css">
+
+	<!--[if lt IE 9]> <script src="assets/js/html5shiv.js"></script> <![endif]-->
+</head>
+</head>
+<body>
+<body>
+<header id="header">
+	<div id="head" class="parallax" parallax-speed="2">
+		<h1 id="logo" class="text-center">
+			<img class="img-circle" src="assets/images/guy.png" alt="">
+			<span class="title">Jon Houston Jones</span>
+			<span class="tagline">Data Analyst<br>
+				<a href="">jonhoustonjones@gmail.com&nbsp;</a></span>
+		</h1>
+	</div>
+
+	<nav class="navbar navbar-default navbar-sticky">
+		<div class="container-fluid">
+			
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+			</div>
+			
+			<div class="navbar-collapse collapse">
+				
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="index.html">Home</a></li>
+					<li><a href="resume.html">Resume</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="music-analysis.html">Music Analysis</a></li>
+							<li><a href="book-analysis.html">Book Analysis</a></li>
+							<li><a href="lyric-videos.html">Lyric Videos</a></li>
+							<li><a href="other.html">Other Projects</a></li>
+						</ul>
+					</li>
+
+				</ul>
+			
+			</div><!--/.nav-collapse -->			
+		</div>	
+	</nav>
+</header>
+  <main id="main">
+    <div class="container">
+      <div class="row section topspace">
+        <div class="col-md-12">
+          <h2 class="section-title"><span>Music Lyric Analysis</span></h2>
+          <p class="lead text-muted">Analyzing lyrics using python&nbsp;</p>
+			<hr>
+			
+          
+          <h3 class="article-title"> <span>Country Lyric Analysis</span></h3>
+			
+<p>This project analyzes lyrical trends in top country music from 1944 through 2022 by scraping song lyrics, processing language content, and visualizing patterns across decades. The goal was to observe how word choices in country lyrics evolved over time, using natural language processing (NLP) techniques.</p>
+
+<h4>Phase 1: Data Collection</h4>
+<p>
+The project began by programmatically gathering the top 40 country songs for each year using <code>playback.fm</code>. For each track, I retrieved the lyrics using the <strong>Genius API</strong> and stored the results locally for further processing.
+</p>
+
+<div style="max-height: 100px; overflow: auto; background-color: #f4f4f4; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+<pre><code>def get_top_40_songs(year):
+    url = f"https://playback.fm/charts/country/{year}"
+    response = requests.get(url)
+    ...
+</code></pre>
+</div>
+
+<p>
+The lyrics were cleaned and normalized — including removal of brackets, annotations, and HTML tags — and saved to structured directories sorted by year. A fallback system also attempted to resolve missing lyrics using alternate APIs and manual scraping.
+</p>
+
+<h4>Phase 2: NLP Preprocessing</h4>
+<p>
+With the lyrics collected, the text was tokenized and cleaned using standard NLP practices. Stop words were removed and vectorization was performed using both TF-IDF and CountVectorizer methods. This enabled word frequency comparisons and helped highlight word usage trends over time.
+</p>
+
+<h4>Phase 3: Handling Unfindable Lyrics</h4>
+<p>
+Songs whose lyrics could not be retrieved during the first pass were saved to an <code>unfindable_songs</code> list. A separate async script reattempted retrieval using simplified artist/song name variations and a final fallback to the <code>ChartLyrics API</code>. This approach recovered many lyrics that were missed in the original sweep.
+</p>
+
+<div style="max-height: 100px; overflow: auto; background-color: #f4f4f4; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+<pre><code>async def find_lyrics_for_unfindable_songs(...):
+    ...
+    if lyrics_div:
+        lyrics = lyrics_div.get_text(separator=' ').strip()
+        ...
+</code></pre>
+</div>
+
+<h4>Phase 4: Analysis and Visualization</h4>
+<p>
+Once all lyrics were collected, I grouped them by year and visualized trends in linguistic features, such as the frequency of certain themes or changes in vocabulary complexity. Additional metrics like average word length, sentiment scores, and etymological breakdowns could be layered into the analysis pipeline.
+</p>
+
+<h4>Key Technologies Used</h4>
+<ul>
+  <li>Python: requests, BeautifulSoup, re, asyncio, os</li>
+  <li>NLP: spaCy, scikit-learn (TF-IDF, CountVectorizer)</li>
+  <li>APIs: Genius API, ChartLyrics, Playback.fm</li>
+  <li>Async data retrieval for large-scale scraping</li>
+</ul>
+			<h3 class = "conclusion"><span>Graphs</span></h3>
+  <h3>Average Word Count per Top 40 Country Song (by Year)</h3>
+			  <div style="width:100%; max-width:1080px; height:500px; margin:0 auto;">
+    <canvas id="avgWordsChart"></canvas>
+  </div>
+
+  <script>
+    const labels = Object.keys(avgWordsData);
+    const data = Object.values(avgWordsData);
+
+    const ctx = document.getElementById('avgWordsChart').getContext('2d');
+
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Average Words per Song',
+          data,
+          borderColor: '#1da1f2',
+          backgroundColor: '#bae6fd',
+          tension: 0.3,
+          pointRadius: 4,
+          pointHoverRadius: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { title: { display: true, text: 'Year' } },
+          y: { title: { display: true, text: 'Average Word Count' } }
+        }
+      }
+    });
+  </script>
+
+
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer id="footer">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-3 widget">
+				<h3 class="widget-title">Contact</h3>
+				<div class="widget-body">
+					<p>
+						<a href="mailto:#">jonhoustonjones@gmail.com</a><br>
+						<br>
+						Austin, Texas
+					</p>	
+				</div>
+			</div>
+
+			<div class="col-md-3 widget">
+				<h3 class="widget-title">Follow me</h3>
+				<div class="widget-body">
+					<p class="follow-me-icons">
+						<a href="https://www.linkedin.com/in/jonhoustonjones/"><i class="fa fa-linkedin fa-2"></i></a>
+						<a href="https://www.tiktok.com/@haystormjuno"><i class="fa fa-tiktok fa-2"></i></a>
+						<a href="https://github.com/Haystorm"><i class="fa fa-github fa-2"></i></a>
+						
+					</p>
+				</div>
+			</div>
+
+			
+			</div>
+
+		</div> 
+	
+</footer>
+
+<footer id="underfooter">
+	<div class="container">
+		<div class="row">
+			
+			<div class="col-md-6 widget">
+				<div class="widget-body">
+					<p>Austin, Texas </p>
+				</div>
+			</div>
+
+			<div class="col-md-6 widget">
+				<div class="widget-body">
+					<p class="text-right">
+						Copyright &copy; 2025 Houston Jones<br> 
+						</p>
+				</div>
+			</div>
+
+		</div> <!-- /row of widgets -->
+
+
+
+<!-- JavaScript libs are placed at the end of the document so the pages load faster -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="assets/js/template.js"></script>
+</body>
+</html>

@@ -1,0 +1,218 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <title>Music Analysis | Houston Jones</title>
+
+	<link rel="shortcut icon" href="assets/images/sitecon.ico">
+	
+	<!-- Bootstrap -->
+	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.no-icons.min.css" rel="stylesheet">
+	<!-- Icons -->
+	<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+	<!-- Fonts -->
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Alice|Open+Sans:400,300,700">
+	<!-- Custom styles -->
+	<link rel="stylesheet" href="assets/css/styles.css">
+
+	<!--[if lt IE 9]> <script src="assets/js/html5shiv.js"></script> <![endif]-->
+</head>
+
+<body>
+<header id="header">
+	<div id="head" class="parallax" parallax-speed="2">
+		<h1 id="logo" class="text-center">
+			<img class="img-circle" src="assets/images/guy.png" alt="">
+			<span class="title">Jon Houston Jones</span>
+			<span class="tagline">Data Analyst<br>
+				<a href="">jonhoustonjones@gmail.com&nbsp;</a></span>
+		</h1>
+	</div>
+
+	<nav class="navbar navbar-default navbar-sticky">
+		<div class="container-fluid">
+			
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+			</div>
+			
+			<div class="navbar-collapse collapse">
+				
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="index.html">Home</a></li>
+					<li><a href="resume.html">Resume</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="music-analysis.html">Music Analysis</a></li>
+							<li><a href="book-analysis.html">Book Analysis</a></li>
+							<li><a href="lyric-videos.html">Lyric Videos</a></li>
+							<li><a href="other.html">Other Projects</a></li>
+						</ul>
+					</li>
+
+				</ul>
+			
+			</div><!--/.nav-collapse -->			
+		</div>	
+	</nav>
+</header>
+  <main id="main">
+    <div class="container">
+      <div class="row section topspace">
+        <div class="col-md-12">
+          <h2 class="section-title"><span>Other Projects</span></h2>
+          <p class="lead text-muted">Smaller projects that use python or data analysis</p>
+			<hr>
+
+        </div>
+<div class="project-summary">
+<h3 class="article-title"><span> Cat Water Intake Tracker</span></h3>
+<p>
+This project began as a practical solution for monitoring my cats' water consumption using Google Sheets. Over time, I expanded it into a lightweight data analysis tool to explore potential environmental factors that might influence their hydration habits.
+</p>
+
+<ul>
+  <li>Tracks refill dates and water amounts after each top-off</li>
+  <li>Calculates estimated consumption based on average duration between refills</li>
+  <li>Integrates with Google Apps Script to retrieve average temperature and humidity for each period</li>
+  <li>Visualizes correlations between environmental factors and water intake (none identified so far)</li>
+
+</ul>
+
+<p>
+<a href="https://docs.google.com/spreadsheets/d/1jC6kOcrNESh0MIBIU-kSMn8_lIIlSKlerX-qjJJdHNU/edit?usp=sharing" target="_blank" rel="noopener noreferrer">
+View the tracker in Google Sheets
+</a>
+</p>
+
+	<h3 class="article-title"><span>Meraki Network IP Aggregator</span></h3>
+  <p>
+    Built a Python script to automate the retrieval of public IPs, ISP names, and locations (city) for Meraki networks across an organization. 
+    The script reads a list of networks from a CSV, queries the Meraki API (including VPN status and uplinks endpoints), and enriches the data using an IP geolocation API.
+  </p>
+  <ul>
+    <li>Used the Meraki Dashboard API and <code>requests</code> to gather device and VPN public IP info.</li>
+    <li>Parsed nested fields to handle cases where IPs were hidden in uplink data.</li>
+    <li>Cleaned ISP names using regex and geolocated IPs via <code>ipinfo.io</code>.</li>
+    <li>Exported results to a final CSV report including network name, public IP, ISP, and city.</li>
+  </ul>
+  <p>
+    This helped automate what was previously a manual network audit process.
+  </p>
+</div>
+
+	<hr>	  
+
+		  <h3 class="article-title"><span>Device Inventory Parsing and Analysis</span></h3>
+  <p>
+    I developed a Python script to parse an exported HTML table of device inventory data. The script extracts key information such as phone model, MAC address, IP address, and user description. Based on the IP address, each device is classified by location (e.g., internal, remote, or unknown).
+  </p>
+  <p>
+    The extracted data is exported to a structured CSV file, which is then analyzed to generate summary tallies. These tallies show the number of devices per model across different locations, offering clear insight into deployment patterns.
+  </p>
+  <p>
+    This project demonstrates my ability to clean, structure, and analyze semi-structured data from real-world systems using Python, BeautifulSoup, and standard libraries.
+  </p>
+
+		  <h3 class="article-title"><span>CSV Comparison and Change Tracking</span></h3>
+  <p>
+    In this project, I developed a lightweight Python workflow to monitor changes across recurring CSV exports. 
+    The goal was to track shifts in specific classification fields and identify newly introduced records between two time points.
+  </p>
+
+  <ul>
+    <li>Filtered relevant rows based on custom tags.</li>
+    <li>Generated simplified CSVs with only the required columns for tracking.</li>
+    <li>Created a derived classification column based on IP address patterns.</li>
+    <li>Built a script to compare current and previous datasets:</li>
+    <ul>
+      <li>Detected records that shifted from one classification state to another.</li>
+      <li>Flagged new entries not found in the earlier dataset.</li>
+    </ul>
+    <li>Exported results to a clean, actionable summary file.</li>
+  </ul>
+
+  <p>
+    This type of delta analysis is useful for highlighting trends, surfacing anomalies, and maintaining visibility into evolving datasets in a minimally disruptive way.
+  </p>
+		  <h3 class="article-title"><span> Latency Monitoring via Pinging</span></h3>
+  <p>
+    This project focused on gathering real-time network latency data across a list of devices. 
+    I built a Python script to read a CSV containing hostnames or IP addresses, ping each device, and capture the latency.
+  </p>
+
+  <ul>
+    <li>Read and iterated over a structured list of devices exported from existing systems.</li>
+    <li>Used standard networking tools to measure ping response times.</li>
+    <li>Appended latency data directly into the source file or output a clean summary for analysis.</li>
+  </ul>
+
+  <p>
+    This lightweight diagnostic tool helped quickly surface performance issues across distributed endpoints and was easily adaptable for regular network health snapshots.
+  </p>
+	    </div>
+      </div>
+
+  </main>
+  <footer id="footer">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-3 widget">
+				<h3 class="widget-title">Contact</h3>
+				<div class="widget-body">
+					<p>
+						<a href="mailto:#">jonhoustonjones@gmail.com</a><br>
+						<br>
+						Austin, Texas
+					</p>	
+				</div>
+			</div>
+
+			<div class="col-md-3 widget">
+				<h3 class="widget-title">Follow me</h3>
+				<div class="widget-body">
+					<p class="follow-me-icons">
+						<a href="https://www.linkedin.com/in/jonhoustonjones/"><i class="fa fa-linkedin fa-2"></i></a>
+						<a href="https://www.tiktok.com/@haystormjuno"><i class="fa fa-tiktok fa-2"></i></a>
+						<a href="https://github.com/Haystorm"><i class="fa fa-github fa-2"></i></a>
+						
+					</p>
+				</div>
+			
+
+			
+			</div>
+
+				</div> <!-- /row of widgets -->
+	</div> <!-- /container -->
+</footer>
+
+<footer id="underfooter">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-6 widget">
+				<div class="widget-body">
+					<p>Austin, Texas</p>
+				</div>
+			</div>
+			<div class="col-md-6 widget">
+				<div class="widget-body text-right">
+					<p>Copyright &copy; 2025 Houston Jones</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</footer>
+
+<!-- JavaScript libs -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="assets/js/template.js"></script>
+
+</body>
+</html>

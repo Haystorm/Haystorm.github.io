@@ -1,0 +1,348 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
+
+	<link rel="icon" href="assets/images/sitecon.ico" type="image/x-icon">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <title>Book Analysis | Houston Jones</title>
+
+	
+	<!-- Bootstrap -->
+	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.no-icons.min.css" rel="stylesheet">
+	<!-- Icons -->
+	<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+	<!-- Fonts -->
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Alice|Open+Sans:400,300,700">
+	<!-- Custom styles -->
+	<link rel="stylesheet" href="assets/css/styles.css">
+
+	<!--[if lt IE 9]> <script src="assets/js/html5shiv.js"></script> <![endif]-->
+</head>
+
+<body>
+<header id="header">
+	<div id="head" class="parallax" parallax-speed="2">
+		<h1 id="logo" class="text-center">
+			<img class="img-circle" src="assets/images/guy.png" alt="">
+			<span class="title">Jon Houston Jones</span>
+			<span class="tagline">Data Analyst<br>
+				<a href="">jonhoustonjones@gmail.com&nbsp;</a></span>
+		</h1>
+	</div>
+
+	<nav class="navbar navbar-default navbar-sticky">
+		<div class="container-fluid">
+			
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+			</div>
+			
+			<div class="navbar-collapse collapse">
+				
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="index.html">Home</a></li>
+					<li><a href="resume.html">Resume</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="music-analysis.html">Music Analysis</a></li>
+							<li><a href="book-analysis.html">Book Analysis</a></li>
+							<li><a href="lyric-videos.html">Lyric Videos</a></li>
+							<li><a href="other.html">Other Projects</a></li>
+						</ul>
+					</li>
+
+				</ul>
+			
+			</div><!--/.nav-collapse -->			
+		</div>	
+	</nav>
+</header>
+  <main id="main">
+  <div class="container">
+    <div class="row section topspace">
+      <div class="col-md-12">
+        <h2 class="section-title"><span>Book Analysis</span></h2>
+        <p class="lead text-muted">
+          Comparing narrative styles, vocabulary trends, and unique features in literature.
+        </p>
+        <hr>
+<div class="lead">
+  This project explores linguistic trends in the works of prominent fantasy authors, focusing on the etymological origins of the vocabulary they use. The idea originated from a YouTube video comparing the linguistic roots employed by different fantasy writers. Inspired by this, I expanded the concept into a full-scale text analysis.
+</div>
+
+<h3 class="article-title"><span>Etymology</span></h3>
+
+<div class="col-lg-8 col-md-8">
+  <p>This section focuses on the etymological classification of every unique word used across selected works, specifically identifying words with roots in <strong>Germanic</strong>, <strong>Latin</strong>, and <strong>Greek</strong> languages. Words not falling within these categories were grouped under “Other.” This classification approach is particularly useful when analyzing authors who invent languages or draw from non-standard vocabularies.</p>
+
+  <p>The analysis was conducted by collecting <code>.txt</code> files of each book and parsing them to extract all unique words. Using Python’s <strong>BeautifulSoup</strong> library, I scraped <em>etymonline.com</em> for each word's definition. The etymology was then parsed and stored in a JSON-based cache using the following function:</p>
+
+  <div style="max-height: 100px; overflow: auto; background-color: #f4f4f4; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+    <pre><code>
+def categorize_origin(etymology):
+    if not etymology:
+        return "Unknown"
+
+    if re.search(r'from (Ancient )?Greek', etymology, re.I):
+        return "Greek"
+
+    origins = {"Latin": 0, "Germanic": 0, "Greek": 0}
+    origins["Latin"] += len(re.findall(r'(Latin|Latinate|French)', etymology, re.I))
+    origins["Germanic"] += len(re.findall(r'(Germanic|German|Middle\s?English|Scandinavian|Old\s?English)', etymology, re.I))
+    origins["Greek"] += len(re.findall(r'(Greek)', etymology, re.I))
+
+    highest_origin = max(origins, key=origins.get)
+    return highest_origin if origins[highest_origin] > 0 else "Unknown"
+    </code></pre>
+  </div><br>
+
+  <p>When a word’s etymology could not be identified through scraping, it was added to an <code>unknown_etymologies.json</code> cache for further processing. Several fallback strategies were then employed:</p>
+
+  <h4>1. Lemmatization with SpaCy</h4>
+  <p>Some unknown words were simply conjugated forms of known entries. Using the SpaCy library, I identified lemmas for unknown words and reassigned known origins from root forms when possible:</p>
+
+  <div style="max-height: 100px; overflow: auto; background-color: #f4f4f4; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+    <pre><code>
+def transfer_known_etymologies():
+    known_cache = load_json(KNOWN_FILE)
+    unknown_cache = load_json(UNKNOWN_FILE)
+
+    for word in list(unknown_cache.keys()):
+        lemma = nlp(word)[0].lemma_
+        if lemma in known_cache:
+            known_cache[word] = known_cache[lemma]
+            del unknown_cache[word]
+
+    save_json(known_cache, KNOWN_FILE)
+    save_json(unknown_cache, UNKNOWN_FILE)
+    </code></pre>
+  </div><br>
+
+  <h4>2. Word Segmentation</h4>
+  <p>Compound words posed additional challenges, as <em>etymonline</em> often fails to analyze them fully. I used the <strong>wordsegment</strong> library to decompose compounds and infer origin from component parts:</p>
+
+  <div style="max-height: 100px; overflow: auto; background-color: #f4f4f4; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+    <pre><code>
+def process_compounds():
+    known_cache = load_json(KNOWN_FILE)
+    unknown_cache = load_json(UNKNOWN_FILE)
+
+    for word in list(unknown_cache.keys()):
+        components = segment(word)
+        if len(components) > 1 and all(comp in known_cache for comp in components):
+            origins = [known_cache[comp] for comp in components]
+            known_cache[word] = origins[0] if len(set(origins)) > 1 else origins[0]
+            del unknown_cache[word]
+
+    save_json(known_cache, KNOWN_FILE)
+    save_json(unknown_cache, UNKNOWN_FILE)
+    </code></pre>
+  </div><br>
+
+  <h4>3. GPT-Based Completion</h4>
+  <p>As a final fallback, I used the <strong>ChatGPT API</strong> (gpt-4o-mini) to classify the remaining unknowns. Words were fed into a constrained JSON prompt designed to return standardized etymological categories:</p>
+
+  <div style="max-height: 100px; overflow: auto; background-color: #f4f4f4; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+    <pre><code>
+# Normalize terms
+def normalize_etymology(etymology):
+    if re.search(r"(old french|french|latin|latinate)", etymology, re.I):
+        return "Latin"
+    elif re.search(r"(norse|old english|germanic|scandinavian)", etymology, re.I):
+        return "Germanic"
+    elif re.search(r"(greek)", etymology, re.I):
+        return "Greek"
+    return "Unknown"
+
+# Generate batch prompt
+def generate_prompt(words):
+    return f"""
+Respond only in JSON:
+- 'Latin' for Latin, French, or Latinate.
+- 'Germanic' for German, Norse, Old English, etc.
+- 'Greek' for Greek.
+- 'Unknown' if unsure.
+
+Example:
+{{"word1": "Latin", "word2": "Germanic", "word3": "Unknown"}}
+
+Now classify:
+{json.dumps(words, indent=2)}
+"""
+    </code></pre>
+  </div><br>
+
+  <hr>
+  <h3>Author Selection</h3>
+  <p>To examine stylistic variation over time, I selected a mix of modern and classic fantasy authors. For each author, I analyzed the first 3–5 books of their main series (depending on length), and applied the same etymological classification pipeline.</p>
+
+  <p>The original hypothesis: <em>earlier authors would favor Germanic-rooted words more than contemporary writers</em>. While this trend generally holds, several notable exceptions emerged. The pie charts on the right show the overall etymological distribution per author, and the charts below present yearly trends in language origin usage.</p>
+
+  <!-- Charts -->
+  <div style="width:100%; max-width:1080px; height:300px; margin:0 auto;">
+    <canvas id="germanicLineChart"></canvas>
+  </div>
+  <div style="width:100%; max-width:1080px; height:300px; margin:0 auto;">
+    <canvas id="latinLineChart"></canvas>
+  </div>
+  <div style="width:100%; max-width:1080px; height:300px; margin:0 auto;">
+    <canvas id="greekLineChart"></canvas>
+  </div>
+
+  <br>
+
+
+
+
+	  </div>
+
+      <!-- Right side: 1/3 width (4 columns) -->
+		<h4 class="text-center"> Brandon Sanderson</h4>
+      <div class="col-lg-4 col-md-4">
+
+        <canvas id="SandersonPieChart" class="small-chart"></canvas>
+
+
+      </div>
+		<h4 class="text-center"> JRR Tolkien</h4>
+		<div class="col-lg-4 col-md-4">
+
+        <canvas id="TolkienPieChart" class="small-chart"></canvas>
+
+
+      </div>
+				<h4 class="text-center"> Robin Hobb</h4>
+		<div class="col-lg-4 col-md-4">
+
+        <canvas id="HobbPieChart" class="small-chart"></canvas>
+
+
+      </div>
+				<h4 class="text-center"> Robert Jordan</h4>
+	  <div class="col-lg-4 col-md-4">
+
+        <canvas id="JordanPieChart" class="small-chart"></canvas>
+
+
+      </div>
+						<h4 class="text-center"> George R.R. Martin</h4>
+		<div class="col-lg-4 col-md-4">
+
+        <canvas id="MartinPieChart" class="small-chart"></canvas>
+
+
+      </div>
+				<h4 class="text-center"> Ursala K. L Guin</h4>
+		<div class="col-lg-4 col-md-4">
+
+        <canvas id="LeGuinPieChart" class="small-chart"></canvas>
+
+
+      </div>
+								<h4 class="text-center"> Terry Pratchett</h4>
+	  <div class="col-lg-4 col-md-4">
+
+        <canvas id="PratchettPieChart" class="small-chart"></canvas>
+
+
+      </div>
+			<h4 class="text-center"> Rebecca Yarros</h4>
+		<div class="col-lg-4 col-md-4">
+
+        <canvas id="YarrosPieChart" class="small-chart"></canvas>
+
+
+      </div>
+					<h4 class="text-center"> Roger Zelazny</h4>
+		<div class="col-lg-4 col-md-4">
+
+        <canvas id="ZelaznyPieChart" class="small-chart"></canvas>
+
+
+      </div>
+		
+    </div>
+	  
+    </div>
+	  	<h4 class = "conclusion"><span>Etymology Conclusion</span></h4>
+	<br>
+  <p>Across this dataset of 35 fantasy novels, a clear trend emerges: more contemporary authors tend to rely more heavily on Latin-rooted vocabulary, whereas earlier writers lean more toward Germanic origins. This may reflect both stylistic preferences and evolving genre norms over time.</p>
+</div>
+	  
+
+</main>
+
+<footer id="footer">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-3 widget">
+				<h3 class="widget-title">Contact</h3>
+				<div class="widget-body">
+					<p>
+						<a href="mailto:#">jonhoustonjones@gmail.com</a><br>
+						<br>
+						Austin, Texas
+					</p>	
+				</div>
+			</div>
+
+			<div class="col-md-3 widget">
+				<h3 class="widget-title">Follow me</h3>
+				<div class="widget-body">
+					<p class="follow-me-icons">
+						<a href="https://www.linkedin.com/in/jonhoustonjones/"><i class="fa fa-linkedin fa-2"></i></a>
+						<a href="https://www.tiktok.com/@haystormjuno"><i class="fa fa-tiktok fa-2"></i></a>
+						<a href="https://github.com/Haystorm"><i class="fa fa-github fa-2"></i></a>
+						
+					</p>
+				</div>
+			</div>
+
+			
+			</div>
+
+		</div> <!-- /row of widgets -->
+	</div>
+</footer>
+
+<footer id="underfooter">
+	<div class="container">
+		<div class="row">
+			
+			<div class="col-md-6 widget">
+				<div class="widget-body">
+					<p>Austin, Texas </p>
+				</div>
+			</div>
+
+			<div class="col-md-6 widget">
+				<div class="widget-body">
+					<p class="text-right">
+						Copyright &copy; 2025 Houston Jones<br> 
+						</p>
+				</div>
+			</div>
+
+		</div> <!-- /row of widgets -->
+	</div>
+</footer>
+
+
+
+<!-- JavaScript libs are placed at the end of the document so the pages load faster -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="assets/js/template.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-trendline"></script>
+
+<script src="charts.js"></script>
+</script>
+
+</body>
+</html>

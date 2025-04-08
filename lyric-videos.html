@@ -1,0 +1,214 @@
+<!-- lyric-videos.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport"    content="width=device-width, initial-scale=1.0">
+
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <title>Stable Diffusion Lyric Videos | Houston Jones</title>
+
+	<link rel="shortcut icon" href="assets/images/sitecon.ico">
+	
+	<!-- Bootstrap -->
+	<link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.no-icons.min.css" rel="stylesheet">
+	<!-- Icons -->
+	<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+	<!-- Fonts -->
+	<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Alice|Open+Sans:400,300,700">
+	<!-- Custom styles -->
+	<link rel="stylesheet" href="assets/css/styles.css">
+
+	<!--[if lt IE 9]> <script src="assets/js/html5shiv.js"></script> <![endif]-->
+</head>
+<body class="home">
+
+<header id="header">
+	<div id="head" class="parallax" parallax-speed="2">
+		<h1 id="logo" class="text-center">
+			<img class="img-circle" src="assets/images/guy.png" alt="">
+			<span class="title">Jon Houston Jones</span>
+			<span class="tagline">Data Analyst<br>
+				<a href="">jonhoustonjones@gmail.com&nbsp;</a></span>
+		</h1>
+	</div>
+
+	<nav class="navbar navbar-default navbar-sticky">
+		<div class="container-fluid">
+			
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
+			</div>
+			
+			<div class="navbar-collapse collapse">
+				
+				<ul class="nav navbar-nav">
+					<li class="active"><a href="index.html">Home</a></li>
+					<li><a href="resume.html">Resume</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Projects <b class="caret"></b></a>
+						<ul class="dropdown-menu">
+							<li><a href="music-analysis.html">Music Analysis</a></li>
+							<li><a href="book-analysis.html">Book Analysis</a></li>
+							<li><a href="lyric-videos.html">Lyric Videos</a></li>
+							<li><a href="other.html">Other Projects</a></li>
+						</ul>
+					</li>
+
+				</ul>
+			
+			</div><!--/.nav-collapse -->			
+		</div>	
+	</nav>
+</header>
+  <main id="main">
+    <div class="container">
+      <div class="row section topspace">
+        <div class="col-md-12">
+          <h2 class="section-title"><span>Lyric Videos</span></h2>
+          <p class="lead text-muted">A creative fusion of AI visuals and music. Each video is generated using Stable Diffusion based on lyrics.</p>
+          <!-- Embed a few videos or thumbnails that open modals or link to YouTube/Vimeo -->
+<div style="display: flex; gap: 2rem; align-items: flex-start;">
+  <!-- Left: 2/3 text -->
+  <div style="flex: 2;">
+<h3>Project Overview</h3>
+<p>This project was initially conceived as a creative pipeline for producing TikTok content using Stable Diffusion. Over the course of a year, I generated 102 short videos, which can be broadly categorized into two types: <strong>ControlNet Lyric Videos</strong> and <strong>Sound Reactive Animations</strong>.</p>
+
+<p>Examples of each are embedded on the right. You can pause them or scroll below to explore a detailed breakdown of the process used to create each format.</p>
+
+<h4>ControlNet Lyric Videos</h4>
+<p>The first video example demonstrates the use of <strong>ControlNet</strong> in combination with <strong>Stable Diffusion</strong> to render text that appears visually embedded within generated imagery. This effect was achieved by overlaying masked text as part of the image input to the model, allowing the content of the lyrics to be aesthetically integrated with the surrounding visuals.</p>
+
+<p>To prepare these text inputs, I used the Python library <strong>Pillow</strong> to programmatically generate PNG slides containing single lyric phrases. These slides served as foundational input for the image generation workflow. The core function used for this task is shown below:</p>
+
+<div style="max-height: 100px; overflow: auto; background-color: #f4f4f4; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+<pre><code>
+def generate_image(word, font_path):
+    width, height = 512, 910
+    image = Image.new('RGB', (width, height), color='white')
+    font_size = 100
+    font = ImageFont.truetype(font_path, font_size)
+
+    while font.getsize(word)[0] > width or font.getsize(word)[1] > height:
+        font_size -= 1
+        font = ImageFont.truetype(font_path, font_size)
+
+    draw = ImageDraw.Draw(image)
+    text_width, text_height = draw.textsize(word, font=font)
+    x = (width - text_width) / 2
+    y = (height - text_height) / 2
+    draw.text((x, y), word, fill='black', font=font)
+
+    return image
+</code></pre>
+</div><br>
+
+<p>Each generated text slide was then used within the <strong>Automatic1111 Stable Diffusion GUI</strong> to create <strong>ControlNet canny masks</strong>. Using the batch processing functionality, I produced six unique image variations per word, allowing for subtle visual diversity while maintaining a consistent structure.</p>
+
+<p>Finally, the output sequences were imported into <strong>DaVinci Resolve</strong>, where each lyric slide was aligned with the corresponding segment of the audio track to form the completed video.</p>
+
+	  
+	  <h4> Sound Reactive Videos</h4>
+<p>The second video, shown to the right, is a sound-reactive animation generated using <strong>Parseq</strong> in conjunction with the <strong>Deforum</strong> extension for the <strong>Automatic1111 Stable Diffusion Web UI</strong>.</p>
+
+<p><strong>Deforum</strong> enables frame-by-frame image generation by interpolating between frames, allowing each new frame to blend smoothly with the previous one. While this approach is less technically advanced than recent AI video models, it offers a uniquely stylized and expressive aesthetic that I find visually compelling.</p>
+
+<p><strong>Parseq</strong> is a web-based keyframing tool that integrates with Deforum to provide precise control over animation parameters. It allows for camera movement, prompt scheduling, generation strength adjustment (i.e., how closely a frame adheres to the prior image), and much more. Additionally, Parseq supports audio integration: users can upload music tracks, isolate specific events (such as drum hits, vocal peaks, or instrumental cues), and map those events to changes in visual parameters across the animation timeline.</p>
+
+  </div>
+
+  <!-- Right: 1/3 TikTok embed -->
+  <div style="flex: 1;">
+<blockquote class="tiktok-embed" cite="https://www.tiktok.com/@haystormjuno/video/7251472397616860458" data-video-id="7251472397616860458" style="max-width: 605px;min-width: 325px;" > <section> <a target="_blank" title="@haystormjuno" href="https://www.tiktok.com/@haystormjuno?refer=embed">@haystormjuno</a> Messing around with ControlNet <a title="thefrontbottoms" target="_blank" href="https://www.tiktok.com/tag/thefrontbottoms?refer=embed">#thefrontbottoms</a> <a title="stablediffusion" target="_blank" href="https://www.tiktok.com/tag/stablediffusion?refer=embed">#stablediffusion</a> <a title="midwestemo" target="_blank" href="https://www.tiktok.com/tag/midwestemo?refer=embed">#midwestemo</a> <a target="_blank" title="♬ Twin Size Mattress by The Front Bottoms - J" href="https://www.tiktok.com/music/Twin-Size-Mattress-by-The-Front-Bottoms-7015536149531953925?refer=embed">♬ Twin Size Mattress by The Front Bottoms - J</a> </section> </blockquote> <script async src="https://www.tiktok.com/embed.js"></script>
+  <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@haystormjuno/video/7268267711531240750" data-video-id="7268267711531240750" style="max-width: 605px;min-width: 325px;" > <section> <a target="_blank" title="@haystormjuno" href="https://www.tiktok.com/@haystormjuno?refer=embed">@haystormjuno</a> A Lack Of Color - Death Cab For Cutie <a title="indiemusic" target="_blank" href="https://www.tiktok.com/tag/indiemusic?refer=embed">#indiemusic</a> <a title="emo" target="_blank" href="https://www.tiktok.com/tag/emo?refer=embed">#emo</a> <a title="alternative" target="_blank" href="https://www.tiktok.com/tag/alternative?refer=embed">#alternative</a> <a title="deathcabforcuite" target="_blank" href="https://www.tiktok.com/tag/deathcabforcuite?refer=embed">#deathcabforcuite</a> <a title="lyrics" target="_blank" href="https://www.tiktok.com/tag/lyrics?refer=embed">#lyrics</a> <a target="_blank" title="♬ A Lack of Color - Death Cab for Cutie" href="https://www.tiktok.com/music/A-Lack-of-Color-6734373882368624642?refer=embed">♬ A Lack of Color - Death Cab for Cutie</a> </section> </blockquote> <script async src="https://www.tiktok.com/embed.js"></script>
+	</div>
+	
+</div>
+
+<script async src="https://www.tiktok.com/embed.js"></script>
+
+<style>
+.tiktok-embed section {
+  display: none !important;
+}
+</style>
+
+
+<!-- TikTok embed script -->
+<script async src="https://www.tiktok.com/embed.js"></script>
+
+<!-- Optional CSS to hide clutter -->
+<style>
+.tiktok-embed section {
+  display: none !important;
+}
+</style>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+<footer id="footer">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-3 widget">
+				<h3 class="widget-title">Contact</h3>
+				<div class="widget-body">
+					<p>
+						<a href="mailto:#">jonhoustonjones@gmail.com</a><br>
+						<br>
+						Austin, Texas
+					</p>	
+				</div>
+			</div>
+
+			<div class="col-md-3 widget">
+				<h3 class="widget-title">Follow me</h3>
+				<div class="widget-body">
+					<p class="follow-me-icons">
+						<a href="https://www.linkedin.com/in/jonhoustonjones/"><i class="fa fa-linkedin fa-2"></i></a>
+						<a href="https://www.tiktok.com/@haystormjuno"><i class="fa fa-tiktok fa-2"></i></a>
+						<a href="https://github.com/Haystorm"><i class="fa fa-github fa-2"></i></a>
+						
+					</p>
+				</div>
+			</div>
+
+			
+			</div>
+
+		</div> <!-- /row of widgets -->
+
+</footer>
+
+<footer id="underfooter">
+	<div class="container">
+		<div class="row">
+			
+			<div class="col-md-6 widget">
+				<div class="widget-body">
+					<p>Austin, Texas </p>
+				</div>
+			</div>
+
+			<div class="col-md-6 widget">
+				<div class="widget-body">
+					<p class="text-right">
+						Copyright &copy; 2025 Houston Jones<br> 
+						</p>
+				</div>
+			</div>
+
+		</div> <!-- /row of widgets -->
+	</div>
+</footer>
+
+
+
+<!-- JavaScript libs are placed at the end of the document so the pages load faster -->
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+<script src="assets/js/template.js"></script>
+</body>
+</html>
