@@ -375,34 +375,29 @@ const normalize = (arr, min = null, max = null) => {
 
 });
   
-<script src="avgWordsData.js"></script>
-<canvas id="avgWordsChart"></canvas>
+const ctx = document.getElementById('avgWordsChart').getContext('2d');
+const labels = Object.keys(avgWordsData);
+const data = Object.values(avgWordsData);
 
-<script>
-  const ctx = document.getElementById('avgWordsChart').getContext('2d');
-  const labels = Object.keys(avgWordsData);
-  const data = Object.values(avgWordsData);
-
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        label: 'Average Words per Song',
-        data,
-        borderColor: '#1da1f2',
-        backgroundColor: '#bae6fd',
-        tension: 0.3
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        x: { title: { display: true, text: 'Year' } },
-        y: { title: { display: true, text: 'Words' } }
-      }
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels,
+    datasets: [{
+      label: 'Average Words per Song',
+      data,
+      borderColor: '#1da1f2',
+      backgroundColor: '#bae6fd',
+      tension: 0.3
+    }]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      x: { title: { display: true, text: 'Year' } },
+      y: { title: { display: true, text: 'Words' } }
     }
-  });
-</script>
+  }
+});
 
 
